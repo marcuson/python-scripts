@@ -12,6 +12,9 @@ dependencies = [
   "organize-tool @ git+https://github.com/tfeldmann/organize.git",
 ]
 
+[project.scripts]
+organizemarc = "organizemarc.cli.main:cli"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -20,9 +23,6 @@ build-backend = "poetry.core.masonry.api"
 # Poetry
 [tool.poetry]
 include = ["organizemarc/data/**"]
-
-[tool.poetry.scripts]
-organizemarc = "organizemarc.cli.main:cli"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
