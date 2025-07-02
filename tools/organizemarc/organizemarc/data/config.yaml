@@ -116,7 +116,7 @@ rules:
           from organizemarc.filters.date import date_to_lex
           return { "date_lex": date_to_lex(filecontent["due_date"]) }
     actions:
-      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-estintore-fattura-avviso-monpol16.pdf"
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Estintore/{python.date_lex}-estintore-fattura-avviso-monpol16.pdf"
 
   - name: "Affitti - Estintore (pagamento) (monpol16)"
     enabled: *all_enabler
