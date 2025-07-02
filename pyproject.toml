@@ -1,0 +1,24 @@
+[project]
+name = "marcuson-python-scripts"
+version = "0.1.0"
+description = "Meta-package that installs multiple CLI tools from Git"
+requires-python = ">=3.13,<4.0"
+dependencies = ["organizemarc @ git+https://github.com/marcuson/python-scripts.git#subdirectory=tools/organizemarc"]
+
+
+# Poetry
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+tomlkit = "^0.13.3"
+
+
+# Poe
+[tool.poe.tasks.git-deps-delete]
+script = "scripts.git_deps:delete"
+help = "Delete pyproject.toml project.dependencies"
+
+[tool.poe.tasks.git-deps-generate]
+script = "scripts.git_deps:generate"
+help = "Generate pyproject.toml project.dependencies"

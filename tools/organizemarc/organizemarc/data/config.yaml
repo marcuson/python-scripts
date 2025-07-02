@@ -1,0 +1,571 @@
+# organize configuration file
+# https://organize.readthedocs.io
+
+in_folder: &in_folder
+  - "{env.ORGANIZE_ROOT_DIR}/in"
+all_enabler: &all_enabler true
+
+bonifico_poste_date: &bonifico_poste_date 'da te effettuato il giorno (?P<date>\d{2}/\d{2}/\d{4}) alle ore'
+
+rules:
+  # Cicci - Banca
+  - name: "Cicci - Banca (movimenti CC)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["cicci"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "MONTE DEI PASCHI DI SIENA"
+      - filecontent: "Contabile al"
+      - regex: '^\d{20}.pdf$'
+      - python: |
+          from organizemarc.filters.mps import mps_cicci_movimenti_cc
+          return mps_cicci_movimenti_cc(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Cicci/Banca/{python.date_lex}-movimenti-cc-cicci.pdf"
+
+  - name: "Cicci - Banca (estratto conto)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["cicci"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "MONTE DEI PASCHI DI SIENA"
+      - filecontent: "Estratto Conto"
+      - regex: '^\d{20}.pdf$'
+      - python: |
+          from organizemarc.filters.mps import mps_cicci_estratto_conto
+          return mps_cicci_estratto_conto(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Cicci/Banca/{python.date_lex}-estratto-conto-cicci.pdf"
+
+  - name: "Cicci - Banca (doc. sintesi)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["cicci"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "MONTE DEI PASCHI DI SIENA"
+      - filecontent: "Documento di Sintesi"
+      - regex: '^\d{20}.pdf$'
+      - python: |
+          from organizemarc.filters.mps import mps_cicci_doc_sintesi
+          return mps_cicci_doc_sintesi(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Cicci/Banca/{python.date_lex}-doc-sintesi-cicci.pdf"
+
+  - name: "Cicci - Banca (comunicazioni)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["cicci"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "MONTE DEI PASCHI DI SIENA"
+      - filecontent: "Oggetto:"
+      - regex: '^\d{20}.pdf$'
+      - python: |
+          from organizemarc.filters.mps import mps_cicci_comunicazione
+          return mps_cicci_comunicazione(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Cicci/Banca/{python.date_lex}-comunicazione-cicci.pdf"
+
+  # Affitti - Dominio
+  - name: "Affitti - Dominio (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "Netsons"
+      - filecontent: "ilsoggiornodelpoliziano.it"
+      - filecontent: 'Data scadenza\:\s+(?P<due_date_ita>[0-9]{2}/[0-9]{2}/[0-9]{4})'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["due_date_ita"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Dominio/{python.date_lex}-dominio-monpol16.pdf"
+
+  # Affitti - Estintore
+  - name: "Affitti - Estintore (avviso) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "CONTROLLO PERIODICO ESTINTORE PORTATILE"
+      - filecontent: 'Scadenza.*(?P<due_date>\d{2}/\d{2}/\d{4}).*Totale'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["due_date"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-estintore-fattura-avviso-monpol16.pdf"
+
+  - name: "Affitti - Estintore (pagamento) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^Ricevuta_Bonifico_SEPA_Postagiro_\d{8}.*\.pdf$'
+      - filecontent: "Centro Sicurezza"
+      - filecontent: *bonifico_poste_date
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["date"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Estintore/{python.date_lex}-estintore-fattura-pagamento-monpol16.pdf"
+
+  # Affitti - Imposta soggiorno - Agenzia entrate
+  - name: "Affitti - Imp. soggiorno - AdE (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name
+      - filecontent: "(?P<header>Servizio erogato dal Dipartimento delle Finanze)"
+      - python: |
+          from organizemarc.filters.ade import ade_soggiorno
+          return ade_soggiorno(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Imposta soggiorno/Agenzia entrate/{python.date_lex}-{name}.pdf"
+
+  # Affitti - Imposta soggiorno - Comune
+  - name: "Affitti - Imp. soggiorno - Comune (avviso pagamento) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          contains: 052015LTN0313
+          case_sensitive: false
+      - filecontent: 'per il periodo (?P<month_start>[a-zA-Z]+)\+-\+(?P<month_end>[a-zA-Z]+)\s+-\s+(?P<year>\d{4})'
+      - python: |
+          from organizemarc.filters.montepulciano import montepulciano_imposta_soggiorno_avviso
+          return montepulciano_imposta_soggiorno_avviso(
+            path,
+            month_start=filecontent["month_start"],
+            month_end=filecontent["month_end"],
+            year=filecontent["year"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Imposta soggiorno/Comune/{python.date_lex}-avviso-pagamento-{name}-monpol16.pdf"
+
+  - name: "Affitti - Imp. soggiorno - Comune (ricevuta pagamento) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^Ricevuta_PagoPA_(?P<date>\d{8})\.pdf$'
+      - filecontent: 'PER IL PERIODO (?P<month_start>[a-zA-Z]+)\s+-\s+(?P<month_end>[a-zA-Z]+)\s+-\s+(?P<year>\d{4})'
+      - python: |
+          from organizemarc.filters.montepulciano import montepulciano_imposta_soggiorno_ricevuta
+          return montepulciano_imposta_soggiorno_ricevuta(
+            path,
+            month_start=filecontent["month_start"],
+            month_end=filecontent["month_end"],
+            year=filecontent["year"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Imposta soggiorno/Comune/{python.date_lex}-ricevuta-pagamento-monpol16.pdf"
+
+  # ?Affitti - Imposta soggiorno - Ospiti
+  # ?Affitti - Istat
+  # ?Affitti - Motourist
+
+  # Affitti - Pulizie
+  - name: "Affitti - Pulizie: Eramo fatture (avviso) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^Fattura-.*-Marcucci.*\.pdf$'
+      - filecontent: "(?P<header>ERAMO S.R.L.)"
+      - python: |
+          from organizemarc.filters.eramo import eramo_fattura_avviso
+          return eramo_fattura_avviso(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-eramo-fattura-avviso-monpol16.pdf"
+
+  - name: "Affitti - Pulizie: Eramo fatture (pagamento) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^Ricevuta_Bonifico_SEPA_Postagiro_\d{8}.*\.pdf$'
+      - filecontent: "Eramo S.R.L."
+      - filecontent: *bonifico_poste_date
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["date"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-eramo-fattura-pagamento-monpol16.pdf"
+
+  - name: "Affitti - Pulizie: Eramo report Airbnb (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^Report\sAirbnb.*(?i:soggiorno\sdel\spoliziano)\.pdf$'
+      - filecontent: "Report dei guadagni"
+      - python: |
+          from organizemarc.filters.eramo import eramo_report
+          return eramo_report(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-eramo-report-monpol16.pdf"
+
+  - name: "Affitti - Pulizie: Eramo beni consumo (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["affitto", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '(?i)soggiorno\s.*poliziano.*\.pdf$'
+      - filecontent: "VENDITA BIANCHERIA"
+      - python: |
+          from organizemarc.filters.eramo import eramo_beni_consumo
+          return eramo_beni_consumo(path)
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/Affitti-monpol16/Pulizie/{python.date_lex}-eramo-beni-consumo-monpol16.pdf"
+
+  # ?Affitti - Questura
+
+  # ?Doc. ricorrenti - Altro
+
+  # Doc. ricorrenti - Auto
+  - name: "Doc. ricorrenti - Auto (RC auto Golf VI)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "Dettaglio bonifico"
+      - filecontent: "polizza 13.104777"
+      - filecontent: 'Data di accredito\s+(?P<date>\d{2}/\d{2}/\d{4})'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["date"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Auto/{python.date_lex}-pagamento-rc-auto-golf.pdf"
+
+  - name: "Doc. ricorrenti - Auto (bollo Golf VI)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "Ricevuta pagamento bollo auto"
+      - filecontent: "EP165JK"
+      - filecontent: 'Data pagamento\s+(?P<date>\d{2}/\d{2}/\d{4})'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["date"]) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Auto/{python.date_lex}-ricevuta-bollo-golf.pdf"
+
+  # Doc. ricorrenti - Banca
+  - name: "Doc. ricorrenti - Banca - Documenti"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["banca"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          contains:
+            - contabile movimenti
+            - estratto conto
+            - rendiconto titoli
+            - proposta di modifica unilaterale
+          case_sensitive: false
+      - regex: '^(?P<date>\d{2}_\d{2}_\d{4})_8364_(?P<name_rest>.*)$'
+      - python: |
+          from organizemarc.filters.mps import mps_leo
+          return mps_leo(path, date_ita=regex["date"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Banca/{python.date_lex}-8364-{regex.name_rest}"
+
+  # Doc. ricorrenti - Case - Acqua
+  - name: "Doc. ricorrenti - Case - Acqua (bollette) (afrbr148)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "acqua", "afrbr148"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          startswith:
+            - 0029365940_0000271574_
+          case_sensitive: false
+      - filecontent: "Scadenza.*(?P<due_date>[0-9]{2}/[0-9]{2}/[0-9]{4}).*Autolettura"
+      - python:
+          code: |
+            from organizemarc.filters.date import date_to_lex
+            return {"due_date_lex": date_to_lex(filecontent["due_date"])}
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-afrbr148/Acqua/{python.due_date_lex}-acqua-afrbr148.pdf"
+
+  - name: "Doc. ricorrenti - Case - Acqua (bollette) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "acqua", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          startswith:
+            - 0035490074_0000271574_
+          case_sensitive: false
+      - filecontent: "Scadenza.*(?P<due_date>[0-9]{2}/[0-9]{2}/[0-9]{4}).*Autolettura"
+      - python:
+          code: |
+            from organizemarc.filters.date import date_to_lex
+            return {"due_date_lex": date_to_lex(filecontent["due_date"])}
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-monpol16/Acqua/{python.due_date_lex}-acqua-monpol16.pdf"
+
+  # Doc. ricorrenti - Case - Altro
+  - name: "Doc. ricorrenti - Altro - Dominio marcuson.boo"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          contains: cloudflare
+          case_sensitive: false
+      - filecontent: "marcuson.boo"
+      - filecontent: 'Date due\s*(?P<due_date_eng>[a-zA-Z]+ \d+, \d{4})'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          return { "date_lex": date_to_lex(filecontent["due_date_eng"], in_format="%B %d, %Y", loc="en_US.UTF-8") }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Altro/{python.date_lex}-dominio-marcuson.pdf"
+
+  # ?Doc. ricorrenti - Case - Assicurazione
+
+  # Doc. ricorrenti - Case - Gas
+  - name: "Doc. ricorrenti - Case - Gas (bollette) (afrbr148)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "gas", "afrbr148"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^\d{12}_2\.pdf$'
+      - python: |
+          from organizemarc.filters.enel import enel_gas
+          return enel_gas(path, "afrbr148")
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-afrbr148/Gas/{python.due_date_lex}-gas-afrbr148.pdf"
+
+  - name: "Doc. ricorrenti - Case - Gas (bollette) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "gas", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^\d{12}_2\.pdf$'
+      - python: |
+          from organizemarc.filters.enel import enel_gas
+          return enel_gas(path, "monpol16")
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-monpol16/Gas/{python.due_date_lex}-gas-monpol16.pdf"
+
+  # Doc. ricorrenti - Case - Internet-Telefono
+  - name: "Doc. ricorrenti - Case - Internet/Telefono (bollette) (afrbr148)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "internet", "telefono", "afrbr148"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^FATTURA_\d{4}_\d{2}_RL\d{8}\.pdf$'
+      - filecontent: "(?P<place>(BRASCHI))"
+      - filecontent: "RATA UNICA entro il (?P<due_date_ita>[0-9]{2}/[0-9]{2}/[0-9]{4})"
+      - python: |
+          from organizemarc.filters.tim import tim
+          return tim(path, "afrbr148", place=filecontent["place"], due_date_ita=filecontent["due_date_ita"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-afrbr148/Internet-Telefono/{python.due_date_lex}-telefono-afrbr148.pdf"
+
+  - name: "Doc. ricorrenti - Case - Internet/Telefono (bollette) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "internet", "telefono", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^FATTURA_\d{4}_\d{2}_RL\d{8}\.pdf$'
+      - filecontent: "(?P<place>(POLIZIANO))"
+      - filecontent: "RATA UNICA entro il (?P<due_date_ita>[0-9]{2}/[0-9]{2}/[0-9]{4})"
+      - python: |
+          from organizemarc.filters.tim import tim
+          return tim(path, "monpol16", place=filecontent["place"], due_date_ita=filecontent["due_date_ita"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-monpol16/Internet-Telefono/{python.due_date_lex}-telefono-monpol16.pdf"
+
+  # Doc. ricorrenti - Case - Luce-Elettrica
+  - name: "Doc. ricorrenti - Case - Luce elettrica (bollette) (afrbr148)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "luce", "elettrica", "elettricita", "afrbr148"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^\d{12}_2\.pdf$'
+      - python: |
+          from organizemarc.filters.enel import enel_luce
+          return enel_luce(path, "afrbr148")
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-afrbr148/Luce-Elettrica/{python.due_date_lex}-luce-afrbr148.pdf"
+
+  - name: "Doc. ricorrenti - Case - Luce elettrica (bollette) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "luce", "elettrica", "elettricita", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^\d{12}_2\.pdf$'
+      - python: |
+          from organizemarc.filters.enel import enel_luce
+          return enel_luce(path, "monpol16")
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-monpol16/Luce-Elettrica/{python.due_date_lex}-luce-monpol16.pdf"
+
+  - name: "Doc. ricorrenti - Case - Luce elettrica - Enel X (bollette) (monpol16)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa", "bolletta", "luce", "elettrica", "elettricita", "monpol16"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - regex: '^EF\d{8}_(?P<due_date_ita>\d{4})\.pdf$'
+      - python: |
+          from organizemarc.filters.enel import enel_x
+          return enel_x(path, due_date_ita=regex["due_date_ita"])
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti-monpol16/Luce-Elettrica/EnelX/{python.due_date_lex}-enel-x-monpol16.pdf"
+
+  # ?Doc. ricorrenti - Case - Passo carrabile
+
+  # ?Doc. ricorrenti - Dichiarazione redditi
+  # ?Doc. ricorrenti - IMU
+
+  # Doc. ricorrenti - Lavoro
+  - name: "Doc. ricorrenti - Lavoro (busta paga)"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["lavoro"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - name:
+          match: Busta Paga*
+          case_sensitive: false
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Lavoro/{name}.pdf"
+
+  # ?Doc. ricorrenti - Legge 104
+  # ?Doc. ricorrenti - Salute
+
+  # Doc. ricorrenti - TARI
+  - name: "Doc. ricorrenti - TARI"
+    enabled: *all_enabler
+    targets: files
+    locations: *in_folder
+    subfolders: true
+    tags: ["casa"]
+    filter_mode: all
+    filters:
+      - extension: pdf
+      - filecontent: "TRIB.LOCALI"
+      - filecontent: "3944"
+      - filecontent: "TEFA"
+      - filecontent: 'DATA DEL VERSAMENTO\s+(?P<date>\d{2}\s+\d{2}\s+\d{4})'
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          date = "/".join(filecontent["date"].split())
+          return { "date_lex": date_to_lex(date) }
+    actions:
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/TARI/{python.date_lex}-pagamento-tari.pdf"
+
+  # ?Doc. ricorrenti - Telepass
