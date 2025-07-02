@@ -1,4 +1,4 @@
-from tomlkit import parse, dumps
+from tomlkit import comment, nl, parse, dumps
 from pathlib import Path
 
 
@@ -29,6 +29,7 @@ def generate() -> None:
     data = parse(content)
     data["project"]["dependencies"] = deps
     data["project"]["scripts"] = clis
+    data["project"]["scripts"].add(nl()).add(nl()).add(comment("Poetry"))
 
     with open("pyproject.toml", "w", encoding="utf-8") as f:
         f.write(dumps(data))
