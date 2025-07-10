@@ -541,8 +541,12 @@ rules:
       - name:
           match: Busta Paga*
           case_sensitive: false
+      - python: |
+          from organizemarc.filters.date import date_to_lex
+          date = " ".join(name.split(" ")[-2:])
+          return { "date_lex": date_to_lex(date, in_format="%B %Y", out_format="year_month") }
     actions:
-      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Lavoro/{name}.pdf"
+      - move: "{env.ORGANIZE_ROOT_DIR}/out/DocRicorrenti/Lavoro/{python.date_lex}/{name}.pdf"
 
   # ?Doc. ricorrenti - Legge 104
   # ?Doc. ricorrenti - Salute

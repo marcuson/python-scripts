@@ -1,7 +1,7 @@
 # Project info
 [project]
 name = "organizemarc"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = [{ name = "Leonardo Marcucci", email = "marcuson.nn90@gmail.com" }]
 readme = "README.md"
