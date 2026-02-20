@@ -1,0 +1,39 @@
+# Project info
+[project]
+name = "mealietag"
+version = "0.1.0"
+description = ""
+authors = [{ name = "Leonardo Marcucci", email = "marcuson.nn90@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = ["typer (>=0.24.0,<0.25.0)", "requests (>=2.32.5,<3.0.0)"]
+
+[project.scripts]
+mealietag = "mealietag.cli.main:cli"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+# Poetry
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+poetry-plugin-export = ">=1.10.0,<2.0.0"
+
+# Isort
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+line_length = 88
+profile = "black"
+
+
+# Poe
+[tool.poe.poetry_hooks]
+post_sync = "gen-req"
+
+[tool.poe.tasks.gen-req]
+shell = "poetry export -f requirements.txt --output requirements.txt"
+help = "Generate requirements.txt for legacy compatibility"

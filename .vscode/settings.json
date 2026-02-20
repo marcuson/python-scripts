@@ -1,0 +1,7 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always",
+    "source.unusedImports": "always"
+  },
+  "isort.args": ["--profile", "black"]
+}

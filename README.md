@@ -12,6 +12,6 @@ pipx install 'git@github.com:marcuson/python-scripts.git' # SSH
 ### Useful commands quicksheet
 
 ```bash
-poetry sync # Like "npm i"
+poetry sync # Like "npm i", add --no-plugin to skip Poe hooks
 poetry poe <task_name> # Task runner, like "npm run ..."
 ```

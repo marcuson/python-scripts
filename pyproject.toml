@@ -1,12 +1,14 @@
 [project]
 name = "marcuson-python-scripts"
-version = "0.2.0"
+version = "0.3.0"
 description = "Meta-package that installs multiple CLI tools from Git"
 requires-python = ">=3.13,<4.0"
 dependencies = [
+    "mealietag @ git+https://github.com/marcuson/python-scripts.git#subdirectory=tools/mealietag",
 ]
 
 [project.scripts]
+mealietag = "mealietag.cli.main:cli"
 
 
 # Poetry
@@ -18,6 +20,16 @@ tomlkit = "^0.13.3"
 
 
 # Poe
+[tool.poe.poetry_hooks]
+pre_sync = "presync"
+
+[tool.poe.tasks.presync]
+sequence = ["git-deps-delete"]
+
+
+[tool.poe.tasks.gen]
+sequence = ["git-deps-generate"]
+
 [tool.poe.tasks.git-deps-delete]
 script = "scripts.git_deps:delete"
 help = "Delete pyproject.toml project.dependencies"

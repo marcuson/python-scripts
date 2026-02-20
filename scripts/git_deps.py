@@ -1,5 +1,6 @@
-from tomlkit import comment, nl, parse, dumps
 from pathlib import Path
+
+from tomlkit import comment, dumps, nl, parse
 
 
 def delete() -> None:
