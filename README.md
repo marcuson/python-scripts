@@ -3,8 +3,7 @@
 ## How to install
 
 ```bash
-pipx install 'git+https://github.com/marcuson/python-scripts.git' # HTTPS
-pipx install 'git@github.com:marcuson/python-scripts.git' # SSH
+uvx https://github.com/marcuson/python-scripts.git
 ```
 
 ## Development
@@ -12,6 +11,11 @@ pipx install 'git@github.com:marcuson/python-scripts.git' # SSH
 ### Useful commands quicksheet
 
 ```bash
-poetry sync # Like "npm i", add --no-plugin to skip Poe hooks
-poetry poe <task_name> # Task runner, like "npm run ..."
+uv cache clean # Clean uv build cache
+uv build
+uv build --clear
+
+uv run --no-project scripts/<script-name> # Something like task runner
+uv run --no-project scripts/build.py
+uv run --no-project scripts/clean.py
 ```

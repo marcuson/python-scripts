@@ -1,12 +1,12 @@
 [project]
-name = "marcuson_python_scripts"
+name = "hellopython"
 version = "0.1.0"
-description = "Package installer for Marcuson's Python scripts"
+description = "Hello Python!"
 requires-python = ">=3.12"
 dependencies = []
 
 [project.scripts]
-marcuson-python-scripts = "marcuson_python_scripts.cli:install"
+hellopython = "hellopython.cli:main"
 
 [build-system]
 requires = ["uv-build>=0.11.28,<0.12"]
@@ -15,4 +15,3 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 source-exclude = [".venv"]
 wheel-exclude = [".venv"]
-data = { data = "data" }
