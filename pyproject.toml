@@ -5,14 +5,31 @@ description = "Package installer for Marcuson's Python scripts"
 requires-python = ">=3.12"
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/marcuson/python-scripts"
+Source = "https://github.com/marcuson/python-scripts.git"
+
 [project.scripts]
 marcuson-python-scripts = "marcuson_python_scripts.cli:install"
+
+[dependency-groups]
+dev = ["poethepoet>=0.48.0"]
 
 [build-system]
 requires = ["uv-build>=0.11.28,<0.12"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
+module-root = ""
 source-exclude = [".venv"]
 wheel-exclude = [".venv"]
-data = { data = "data" }
+
+[tool.poe.tasks]
+build-prep.script = "scripts.build:prep"
+build-uv = "uv build --clear"
+build = ["build-prep", "build-uv"]
+clean-venv.script = "scripts.clean:clean_venv_bin"
+clean-all = ["clean", "clean-venv"]
+clean-root.script = "scripts.clean:clean_root"
+clean-bin.script = "scripts.clean:clean_bin"
+clean = ["clean-root", "clean-bin"]

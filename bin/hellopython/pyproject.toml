@@ -1,9 +1,11 @@
 [project]
 name = "hellopython"
-version = "0.1.0"
+version = "0.2.0"
 description = "Hello Python!"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "yachalk>=0.1.8",
+]
 
 [project.scripts]
 hellopython = "hellopython.cli:main"
@@ -13,5 +15,6 @@ requires = ["uv-build>=0.11.28,<0.12"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
+module-root = ""
 source-exclude = [".venv"]
 wheel-exclude = [".venv"]

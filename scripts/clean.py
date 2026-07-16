@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 
-from const import data_scripts_dir, repo_root
+from .const import bins_dir, repo_root
 
 # -- Build artifacts
 
@@ -11,12 +11,12 @@ def _clean_build_artifacts(dir_path: Path):
     shutil.rmtree(dir_path / "dist", ignore_errors=True)
 
 
-def clean_installer():
+def clean_root():
     _clean_build_artifacts(repo_root)
 
 
-def clean_scripts():
-    for script_dir in data_scripts_dir.iterdir():
+def clean_bin():
+    for script_dir in bins_dir.iterdir():
         if not script_dir.is_dir():
             continue
 
@@ -31,8 +31,8 @@ def _clean_venv(dir_path: Path):
     shutil.rmtree(dir_path / ".venv", ignore_errors=True)
 
 
-def clean_venv_scripts():
-    for script_dir in data_scripts_dir.iterdir():
+def clean_venv_bin():
+    for script_dir in bins_dir.iterdir():
         if not script_dir.is_dir():
             continue
 
@@ -41,6 +41,6 @@ def clean_venv_scripts():
 
 # -- Manual entrypoint cleanup
 if __name__ == "__main__":
-    clean_installer()
-    clean_scripts()
-    clean_venv_scripts()
+    clean_root()
+    clean_bin()
+    clean_venv_bin()

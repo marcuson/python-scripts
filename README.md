@@ -11,11 +11,17 @@ uvx https://github.com/marcuson/python-scripts.git
 ### Useful commands quicksheet
 
 ```bash
-uv cache clean # Clean uv build cache
-uv build
-uv build --clear
 
-uv run --no-project scripts/<script-name> # Something like task runner
-uv run --no-project scripts/build.py
-uv run --no-project scripts/clean.py
+# Poe the Poet task runner
+uv run poe <task name>
+
+# Cleaning
+uv cache clean
+uv run poe clean
+uv run poe clean-all
+
+# Launch this to automatically recreate the bin_list array of script to install by walking the "bin" directory
+uv run poe build
+
+uv run --no-project scripts/clean.py # Low level purge in case Poe tasks are not working
 ```

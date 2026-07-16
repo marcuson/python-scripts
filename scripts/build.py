@@ -1,16 +1,14 @@
-import subprocess
-
-import clean
+from .const import bins_dir
 
 
-def _invoke_uv_build():
-    subprocess.run(["uv", "build", "--clear"], check=True)
+def prep():
+    bin_list = []
 
+    for bin_dir in bins_dir.iterdir():
+        if not bin_dir.is_dir():
+            continue
 
-def main():
-    clean.clean_venv_scripts()
-    _invoke_uv_build()
+        bin_list.append(bin_dir.name)
 
-
-if __name__ == "__main__":
-    main()
+    with open("marcuson_python_scripts/bin_list.py", "w") as f:
+        f.write(f"bins = {repr(bin_list)}")

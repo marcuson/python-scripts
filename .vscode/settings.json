@@ -1,7 +1,10 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "always",
-    "source.unusedImports": "always"
-  },
-  "isort.args": ["--profile", "black"]
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "always",
+		"source.unusedImports": "always"
+	},
+	"isort.args": ["--profile", "black"],
+	"python-envs.workspaceSearchPaths": [],
+	"python-envs.defaultPackageManager": "",
+	"python-envs.defaultEnvManager": ""
 }
