@@ -1,0 +1,12 @@
+<details class='food' data-applied-count='$applied_count'$open_attr>
+<summary>
+<h2>$name</h2><span class='chips'>
+<span class='chip approve' data-count='approve'>Approved $approved_count</span>
+<span class='chip reject' data-count='reject'>Rejected $rejected_count</span>
+<span class='chip pending' data-count='pending'>Pending $pending_count</span>
+<span class='chip unsaved' data-unsaved$unsaved_hidden>Unsaved</span>
+</span></summary>
+<p class='muted'>ID: $food_id · Plural: $plural · Aliases: $aliases</p>
+<input type='hidden' name='food_id' value='$food_id'>
+$operations
+</details>

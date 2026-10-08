@@ -1,0 +1,31 @@
+{
+  "mealie_version": "v3.28.0",
+  "openapi_sha256": "90e19aa713ab4ba15352627aca7dc37290f868b213eb65a3e1564f3b7a7ff292",
+  "verified_on": "2026-10-21",
+  "test_target": "local Compose instance with SQLite on tmpfs",
+  "authentication": {
+    "token": "POST /api/auth/token (application/x-www-form-urlencoded)",
+    "api": "Bearer token"
+  },
+  "food_operations": {
+    "list": "GET /api/foods?page=1&perPage=50 -> IngredientFoodPagination",
+    "detail": "GET /api/foods/{item_id} -> IngredientFood-Output",
+    "create": "POST /api/foods with CreateIngredientFood -> IngredientFood-Output (201)",
+    "update": "PUT /api/foods/{item_id} with CreateIngredientFood -> IngredientFood-Output (200)"
+  },
+  "update_semantics": "Replacement: omitted optional fields reset to defaults; send all current writable fields with approved changes.",
+  "write_test": "passed: ID, description, extras, aliases, substitution, and recipe ingredient reference preserved after full update; parser resolved the same food ID through an existing alias",
+  "deduplication": {
+    "merge": "verified",
+    "delete": "verified",
+    "merge_test": "PUT /api/foods/merge redirected recipe ingredients and shopping-list items from fromFood to toFood, removed fromFood, and retained toFood name, plural, and aliases. Mealie does not copy source-only aliases; mealietidy must preserve them before merging.",
+    "recipe_usage": "GET /api/recipes?foods=<food_id>&perPage=1; total is the number of recipes using the food",
+    "shopping_usage": "GET /api/households/shopping/items?queryFilter=foodId==<food_id>&perPage=1; total is the number of shopping-list items using the food",
+    "delete_test": "tests/verify_dedup_mealie_v3_28.py blocked a delete with a recipe reference and deleted an unreferenced food; current recipe, shopping-list, and incoming/outgoing substitution references must all be zero"
+  },
+  "known_limits": [
+    "Recipe and shopping-list usage counts require separate paginated API queries; they are not included in food list or detail responses.",
+    "Delete is allowed only when recipe, shopping-list, and substitution references are all zero; the API removes recipe and substitution references when deleting referenced foods.",
+    "Compatibility with another Mealie version or OpenAPI hash is unverified."
+  ]
+}

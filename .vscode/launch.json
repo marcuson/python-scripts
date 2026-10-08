@@ -9,7 +9,9 @@
 			"type": "debugpy",
 			"request": "launch",
 			"module": "${input:pyModuleDir}.${fileBasenameNoExtension}",
-			"cwd": "${input:pyModuleCwd}"
+			"cwd": "${input:pyModuleCwd}",
+			"python": "${input:pyModuleCwd}/.venv/bin/python"
+			// "args": ["export"]
 		}
 	],
 	"inputs": [

@@ -24,6 +24,14 @@ hellopython
 
 The repository selects Python 3.14 via `.python-version`. Each directory in `bin/` is an independent package with its own `pyproject.toml` and lockfile. The root package provides the installer and the Poe tasks below.
 
+To install just one tool from a local checkout for development, run this from the repository root:
+
+```bash
+uv tool install --force --editable ./bin/hellopython
+```
+
+Replace `hellopython` with another directory under `bin/` as needed. Editable installation links the tool to its source, so Python code changes take effect without reinstalling. `--force` replaces an existing installation of that tool; rerun the command after changing its package metadata or dependencies.
+
 ```bash
 uv run poe build      # Regenerate marcuson_python_scripts/bin_list.py and build the root package
 uv run poe clean      # Remove root and tool dist/ directories

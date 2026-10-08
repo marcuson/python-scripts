@@ -1,1 +1,1 @@
-bins = ['hellopython']
+bins = ['hellopython', 'mealietidy']

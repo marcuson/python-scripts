@@ -1,5 +1,8 @@
 # Repository guide
 
+- Always write code, comments, and documentation in English, even when prompts or conversation messages use another language.
+- Always use type hints when writing code. In Python, annotate every function parameter and return value, and use variable annotations where applicable.
+
 - This is a Python package installer for the tools under `bin/`. The root package requires Python 3.12 or newer; `.python-version` selects 3.14 for local development. Use `uv` and the existing Poe tasks from `pyproject.toml`.
 - `marcuson_python_scripts/cli.py` is the `marcuson-python-scripts` entry point. It reads `pkg_utils.get_pkg_metadata()` to choose local directories or Git subdirectories, then runs `uv tool install --force` for each name in `bin_list.bins`.
 - Each directory under `bin/` is an independent Python project. `bin/hellopython/` currently provides the `hellopython` command and has its own `pyproject.toml` and lockfile.
@@ -10,7 +13,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **python-scripts** (45 symbols, 77 relationships, 1 execution flows).
+This project is indexed by GitNexus as **python-scripts** (49 symbols, 80 relationships, 1 execution flows).
 
 > Index stale? Run `node .gitnexus/run.cjs analyze --index-only` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? Bootstrap with `npx`, `bunx`, or `pnpm dlx` — e.g. `bunx gitnexus@latest analyze` (npm 11 npx crash; #1939).
 
@@ -32,22 +35,22 @@ This project is indexed by GitNexus as **python-scripts** (45 symbols, 77 relati
 
 ## Resources
 
-| Resource                                        | Use for                                  |
-| ----------------------------------------------- | ---------------------------------------- |
-| `gitnexus://repo/python-scripts/context`        | Codebase overview, check index freshness |
-| `gitnexus://repo/python-scripts/clusters`       | All functional areas                     |
-| `gitnexus://repo/python-scripts/processes`      | All execution flows                      |
-| `gitnexus://repo/python-scripts/process/{name}` | Step-by-step execution trace             |
+| Resource | Use for |
+| --- | --- |
+| `gitnexus://repo/python-scripts/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/python-scripts/clusters` | All functional areas |
+| `gitnexus://repo/python-scripts/processes` | All execution flows |
+| `gitnexus://repo/python-scripts/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
-| Task                                         | Read this skill file                               |
-| -------------------------------------------- | -------------------------------------------------- |
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus-exploring/SKILL.md`       |
-| Blast radius / "What breaks if I change X?"  | `.claude/skills/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?"             | `.claude/skills/gitnexus-debugging/SKILL.md`       |
-| Rename / extract / split / refactor          | `.claude/skills/gitnexus-refactoring/SKILL.md`     |
-| Tools, resources, schema reference           | `.claude/skills/gitnexus-guide/SKILL.md`           |
-| Index, status, clean, wiki CLI commands      | `.claude/skills/gitnexus-cli/SKILL.md`             |
+| Task | Read this skill file |
+| --- | --- |
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.claude/skills/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.claude/skills/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->

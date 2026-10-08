@@ -1,8 +1,8 @@
 from .const import bins_dir
 
 
-def prep():
-    bin_list = []
+def prep() -> None:
+    bin_list: list[str] = []
 
     for bin_dir in bins_dir.iterdir():
         if not bin_dir.is_dir():

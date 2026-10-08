@@ -1,0 +1,14 @@
+<div class='row'$hidden_attr><div>
+<b>$action</b>
+<small>Current: $current</small>
+<small>$reason</small>
+<small>Risk: $risk</small>
+</div><div>
+<label for='value-$operation_id'>$value_label</label>
+$value_control
+<label for='note-$operation_id'>Reviewer note</label>
+<textarea id='note-$operation_id' name='note.$operation_id' data-saved='$saved_note'>$note</textarea>
+$usage_panel
+</div><div>
+<fieldset class='decision'><legend>Decision</legend>$options</fieldset>
+</div></div>

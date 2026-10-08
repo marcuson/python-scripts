@@ -1,0 +1,30 @@
+name: mealietidy-dev
+
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v3.28.0
+    restart: "no"
+    ports:
+      - "127.0.0.1:19926:9000"
+    environment:
+      BASE_URL: http://127.0.0.1:19926
+      DB_ENGINE: sqlite
+      ALLOW_SIGNUP: "false"
+      TZ: Etc/UTC
+    tmpfs:
+      - /app/data
+
+  seed:
+    image: ghcr.io/mealie-recipes/mealie:v3.28.0
+    restart: "no"
+    depends_on:
+      mealie:
+        condition: service_healthy
+    entrypoint: ["python", "/seed_mealie.py"]
+    environment:
+      MEALIE_SEED_BASE_URL: http://mealie:9000
+      MEALIE_SEED_SKIP_EXISTING: "1"
+    volumes:
+      - ./scripts/seed_mealie_v3_28.py:/seed_mealie.py:ro
+    tmpfs:
+      - /app/data

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>mealietidy review</title>
+<style>$style</style>
+</head>
+<body>
+<form id='review-form' method='post'>
+<div class='sticky-top'><header>
+<div class='header-top'><h1>mealietidy review</h1>
+<p id='review-summary'>$summary</p>
+<p class='muted food-count'>$food_count</p></div>
+<input type='hidden' name='token' value='$session_token'>
+<input type='hidden' name='review_hash' value='$review_hash'>
+<input type='hidden' name='current_q' value='$query'>
+<input type='hidden' name='conflict_operation_id' value='$conflict_operation_id'>
+<input type='hidden' name='page' value='$page'>
+<input type='hidden' name='show_applied' value='$show_applied'>
+$filter_input
+<div class='header-controls'><div class='search'><label for='search'>Search foods</label>
+<input id='search' name='q' value='$query' placeholder='Name, alias, proposal, or ID'>
+</div>
+<label class='auto-collapse'><input id='auto-collapse' type='checkbox'>Auto-collapse completed foods</label>
+<div class='page-jump'><label for='target-page'>Page</label>
+<select id='target-page' name='target_page'>$page_options</select>
+<button type='submit' name='action' value='goto'>Go</button>
+</div>
+<div class='actions'>
+<button type='submit' name='action' value='search'>Search</button>
+<button type='submit' name='action' value='save'>Save</button>
+<button type='submit' name='action' value='toggle_applied'>$toggle_label</button>
+</div></div>
+<p id='save-status' class='$status_class' role='status'$status_hidden>$status_message$conflict_details</p>
+$conflict_usage
+</header></div>
+$foods
+<nav class='links'>$links</nav>
+</form>
+<script nonce='$session_token'>$script</script>
+</body>
+</html>

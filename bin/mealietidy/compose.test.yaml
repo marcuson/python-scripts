@@ -1,0 +1,15 @@
+name: mealietidy-api-test
+
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v3.28.0
+    restart: "no"
+    ports:
+      - "127.0.0.1:19925:9000"
+    environment:
+      BASE_URL: http://127.0.0.1:19925
+      DB_ENGINE: sqlite
+      ALLOW_SIGNUP: "false"
+      TZ: Etc/UTC
+    tmpfs:
+      - /app/data
